@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Monitoring System</title>
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"> <!-- Flatpickr CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #traffic-form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="datetime-local"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="datetime-local"]:focus {
+            border-color: #28a745;
+            outline: none;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        p {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Traffic Monitoring System</h1>
+    <form id="traffic-form">
+        <label for="plate">Nomor Plat Kendaraan:</label>
+        <input type="text" id="plate" name="plate" required>
+
+        <label for="brand">Merek Kendaraan:</label>
+        <input type="text" id="brand" name="brand" required>
+        
+        <label for="speed">Kecepatan (km/s):</label>
+        <input type="text" id="speed" name="speed" required>
+        
+        <label for="date">Tanggal dan Waktu:</label>
+        <input type="datetime-local" id="date" name="date" required>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> <!-- Flatpickr JS -->
+    <script>
+        flatpickr("#date", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true,
+            allowInput: true,
+        });
+
+        document.querySelector("#traffic-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+        
+            const plate = document.querySelector("input[name='plate']").value;
+            const brand = document.querySelector("input[name='brand']").value;
+            const speed = document.querySelector("input[name='speed']").value;
+            const date = document.querySelector("input[name='date']").value;
+        
+            const data = { plate, brand, speed, date };
+        
+            fetch("http://127.0.0.1:5000/encrypt", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    let message = document.querySelector("#message");
+                    if (!message) {
+                        message = document.createElement("p");
+                        message.id = "message";
+                        document.body.appendChild(message);
+                    }
+        
+                    message.textContent =
+                        data.status === "success"
+                            ? `Respon: ${data.message}`
+                            : `Kesalahan: ${data.message}`;
+                    message.style.color = data.status === "success" ? "green" : "red";
+        
+                    if (data.status === "success") {
+                        document.querySelector("#traffic-form").reset();
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+        
+                    let errorMessage = document.querySelector("#error-message");
+                    if (!errorMessage) {
+                        errorMessage = document.createElement("p");
+                        errorMessage.id = "error-message";
+                        document.body.appendChild(errorMessage);
+                    }
+        
+                    errorMessage.textContent = `Kesalahan: ${error.message}`;
+                    errorMessage.style.color = "red";
+                });
+        });        
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS traffic;
+USE traffic;
+
+CREATE TABLE IF NOT EXISTS traffic_data (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    plate VARCHAR(256),
+    brand VARCHAR(256),
+    speed VARCHAR(256),
+    date DATETIME
+);
