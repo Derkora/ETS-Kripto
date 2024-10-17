@@ -1,0 +1,40 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-vpn
+    ports:
+      - "80:80" 
+    volumes:
+      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/html:/usr/share/nginx/html
+    depends_on:
+      - python-api
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql-vpn
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: secret_msg
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+
+  python-api:
+    build: ./api
+    container_name: python-api-vpn
+    ports:
+      - "5000:5000" 
+    volumes:
+      - ./api:/app
+    depends_on:
+      - mysql
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer-vpn
+    ports:
+      - "8080:8080" 
+    depends_on:
+      - mysql
