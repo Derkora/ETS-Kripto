@@ -5,6 +5,11 @@ untuk memulai
 docker-compose up -d
 ```
 
+jika ada perubahan dan tetap ingin container up
+```bash
+docker-compose up -d --build
+```
+
 kalau udah selesai
 ```bash
 docker-compose down -v
