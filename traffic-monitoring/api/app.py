@@ -28,7 +28,7 @@ def encrypt():
         encrypted_brand = des_encrypt(brand, des_key)  # Gunakan DES untuk brand
 
         # Simpan data terenkripsi ke database
-        db = MySQLdb.connect(host="mysql", user="root", passwd="root", db="traffic")
+        db = MySQLdb.connect(host="mysql-traffic", user="root", passwd="root", db="traffic")
         cursor = db.cursor()
         query = "INSERT INTO traffic_data (plate, brand, speed, date) VALUES (%s, %s, %s, %s)"
         cursor.execute(query, (encrypted_plate, encrypted_brand, encrypted_speed, date))

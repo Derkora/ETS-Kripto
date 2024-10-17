@@ -1,5 +1,5 @@
 services:
-  nginx:
+  nginx-vpn:
     image: nginx:latest
     container_name: nginx-vpn
     ports:
@@ -8,9 +8,9 @@ services:
       - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/html:/usr/share/nginx/html
     depends_on:
-      - python-api
+      - python-api-vpn
 
-  mysql:
+  mysql-vpn:
     image: mysql:latest
     container_name: mysql-vpn
     environment:
@@ -21,7 +21,7 @@ services:
     ports:
       - "3306:3306"
 
-  python-api:
+  python-api-vpn:
     build: ./api
     container_name: python-api-vpn
     ports:
@@ -29,12 +29,12 @@ services:
     volumes:
       - ./api:/app
     depends_on:
-      - mysql
+      - mysql-vpn
 
-  adminer:
+  adminer-vpn:
     image: adminer:latest
     container_name: adminer-vpn
     ports:
       - "8080:8080" 
     depends_on:
-      - mysql
+      - mysql-vpn

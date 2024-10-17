@@ -24,7 +24,7 @@ def encrypt():
         public_key, _ = rsa_get_keys()
 
         # Koneksi ke database MySQL
-        db = MySQLdb.connect(host="mysql", user="root", passwd="root", db="secret_msg")
+        db = MySQLdb.connect(host="mysql-vpn", user="root", passwd="root", db="secret_msg")
         cursor = db.cursor()
 
         # Simpan pesan terenkripsi ke dalam tabel `msg_table`

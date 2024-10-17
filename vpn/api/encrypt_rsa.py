@@ -3,11 +3,11 @@ from sympy import nextprime
 
 class RSA:
     def __init__(self):
-        self.p = None  # Prime number 1
-        self.q = None  # Prime number 2
+        self.p = None  
+        self.q = None  
         self.n = None  # Modulus (n = p * q)
-        self.e = 65537  # Public exponent (common value)
-        self.d = None  # Private exponent
+        self.e = 65537  
+        self.d = None  
 
     def generate_primes(self):
         """Generate two large prime numbers and calculate keys."""
