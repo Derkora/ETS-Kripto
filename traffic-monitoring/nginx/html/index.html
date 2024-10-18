@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Traffic Monitoring System</title>
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"> <!-- Flatpickr CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"> <!-- Font Poppins -->
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
             margin: 0;
             padding: 20px;
         }
-        
+
         h1 {
             text-align: center;
             color: #333;
+            margin-bottom: 40px;
         }
 
         #traffic-form {
@@ -23,25 +25,27 @@
             margin: 0 auto;
             padding: 20px;
             background: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         label {
             display: block;
             margin: 10px 0 5px;
             color: #555;
+            font-size: 14px;
         }
 
         input[type="text"],
         input[type="datetime-local"] {
-            width: 100%;
+            width: 477px; /* Mengatur lebar kotak input menjadi 477px */
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
             transition: border-color 0.3s;
+            font-family: 'Poppins', sans-serif;
         }
 
         input[type="text"]:focus,
@@ -53,23 +57,51 @@
 
         button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #28a745;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
             font-size: 16px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
 
         button:hover {
             background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(1);
         }
 
         p {
             text-align: center;
             margin-top: 20px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            #traffic-form {
+                padding: 15px;
+            }
+
+            button {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            input[type="text"],
+            input[type="datetime-local"] {
+                width: 100%; /* Menyusun ulang lebar untuk perangkat kecil */
+            }
         }
     </style>
 </head>
