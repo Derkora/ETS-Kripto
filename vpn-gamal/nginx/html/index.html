@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPN Connection</title>
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        #vpn-form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+        width: 100%;
+        max-width: 477px; 
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        background-color: #f8f8f8;
+        transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007bff;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif; /* Font Poppins */
+            font-weight: 600; /* Membuat teks tombol lebih tebal */
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(1);
+        }
+
+        #submit-btn {
+            background-color: #007bff;
+            margin-bottom: 10px; /* Jarak antara tombol Submit dan Disconnect */
+        }
+
+        .btn-secondary {
+            background-color: #dc3545;
+        }
+
+        .btn-secondary:hover {
+            background-color: #c82333;
+        }
+
+        p {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #connect-btn {
+            margin: 0 auto;
+            display: block;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            font-size: 18px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #connect-btn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        #connect-btn:active {
+            transform: scale(1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            #vpn-form {
+                padding: 15px;
+            }
+
+            button {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>VPN Connection</h1>
+
+    <button id="connect-btn">Connect</button>
+
+    <form id="vpn-form">
+        <label for="msg">Pesan: </label>
+        <input type="text" id="msg" name="msg" required>
+
+        <button id="submit-btn" type="submit">Submit</button>
+        <button type="button" id="disconnect-btn" class="btn-secondary">Disconnect</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        const vpnForm = document.querySelector("#vpn-form");
+        const connectBtn = document.querySelector("#connect-btn");
+        const disconnectBtn = document.querySelector("#disconnect-btn");
+
+        function sendSignal(signal) {
+            fetch("http://127.0.0.1:5000/signal", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ signal }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    alert(data.message);
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    alert("Kesalahan: " + error.message);
+                });
+        }
+
+        connectBtn.addEventListener("click", () => {
+            sendSignal(1);
+            connectBtn.style.display = "none";
+            vpnForm.style.display = "block";
+        });
+
+        disconnectBtn.addEventListener("click", () => {
+            sendSignal(0);
+            vpnForm.style.display = "none";
+            connectBtn.style.display = "block";
+        });
+
+        vpnForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const msg = document.querySelector("input[name='msg']").value;
+            const data = { msg };
+
+            fetch("http://127.0.0.1:5000/encrypt", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    let message = document.querySelector("#message");
+                    if (!message) {
+                        message = document.createElement("p");
+                        message.id = "message";
+                        document.body.appendChild(message);
+                    }
+
+                    message.textContent = data.status === "success"
+                        ? `Respon: ${data.message}`
+                        : `Kesalahan: ${data.message}`;
+                    message.style.color = data.status === "success" ? "green" : "red";
+
+                    if (data.status === "success") {
+                        vpnForm.reset();
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    let errorMessage = document.querySelector("#error-message");
+                    if (!errorMessage) {
+                        errorMessage = document.createElement("p");
+                        errorMessage.id = "error-message";
+                        document.body.appendChild(errorMessage);
+                    }
+
+                    errorMessage.textContent = `Kesalahan: ${error.message}`;
+                    errorMessage.style.color = "red";
+                });
+        });
+    </script>
+</body>
+</html>
